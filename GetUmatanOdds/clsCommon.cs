@@ -7,15 +7,14 @@ using System.Windows.Forms;
 
 namespace GetUmatanOdds
 {
-    public class clcCommon
+    public class clsCommon
     {
         private string sid = "Test";
         Form1 _form1;
         int readcount = 0;
         int downloadcount = 0;
-        ClassCSV cCSV;
 
-        public clcCommon(Form1 form1)
+        public clsCommon(Form1 form1)
         {
             _form1 = form1;
         }
@@ -28,6 +27,17 @@ namespace GetUmatanOdds
             if (num != 0)
             {
                 MessageBox.Show("JVInit エラー コード：" + num + "：", "エラー",
+                    MessageBoxButtons.OK, MessageBoxIcon.Hand);
+            }
+            return num;
+        }
+
+        public int checkClose()
+        {
+            int num = _form1.axJVLink1.JVClose();
+            if (num != 0)
+            {
+                MessageBox.Show("JVClose エラー コード：" + num + "：", "エラー",
                     MessageBoxButtons.OK, MessageBoxIcon.Hand);
             }
             return num;
@@ -68,7 +78,7 @@ namespace GetUmatanOdds
             return true;
         }
 
-        public bool isJVOpenReal(string dataspec, string strDate)
+        public bool isJVRTOpen(string dataspec, string strDate)
         {
             int retJVRTOpen = _form1.axJVLink1.JVRTOpen(dataspec, strDate);
             if (retJVRTOpen != 0)
@@ -123,156 +133,7 @@ namespace GetUmatanOdds
             return buff;
         }
 
-        public void writeHaitouData(ClassCSV cCSV, JVData_Struct.JV_HR_PAY mHrData, long rowTarget)
-        {
-            int res;
-            string tmp;
-
-            // 単勝配当
-            cCSV.setData(rowTarget - 1, 16,
-                createPayData(mHrData.PayTansyo[0].Pay,
-                mHrData.PayTansyo[0].Umaban));
-            if (int.TryParse(mHrData.PayTansyo[1].Pay, out res))
-            {
-                cCSV.setData(rowTarget + 0, 16,
-                createPayData(mHrData.PayTansyo[1].Pay,
-                mHrData.PayTansyo[1].Umaban));
-                cCSV.setData(rowTarget - 1, 17,
-                createPayData(mHrData.PayTansyo[2].Pay,
-                mHrData.PayTansyo[2].Umaban));
-            }
-            // 1着複勝配当
-            cCSV.setData(rowTarget + 0, 17,
-                createPayData(mHrData.PayFukusyo[0].Pay,
-                mHrData.PayFukusyo[0].Umaban));
-            cCSV.setData(rowTarget - 1, 18,
-                createPayData(mHrData.PayFukusyo[1].Pay,
-                mHrData.PayFukusyo[1].Umaban));
-            cCSV.setData(rowTarget + 0, 18,
-                createPayData(mHrData.PayFukusyo[2].Pay,
-                mHrData.PayFukusyo[2].Umaban));
-            if (int.TryParse(mHrData.PayFukusyo[3].Pay, out res))
-            {
-                cCSV.setData(rowTarget - 1, 19,
-                createPayData(mHrData.PayFukusyo[3].Pay,
-                mHrData.PayFukusyo[3].Umaban));
-                cCSV.setData(rowTarget + 0, 19,
-                createPayData(mHrData.PayFukusyo[4].Pay,
-                mHrData.PayFukusyo[4].Umaban));
-            }
-            // 枠連配当
-            tmp = "0" + mHrData.PayWakuren[0].Umaban.Substring(0, 1) +
-                "0" + mHrData.PayWakuren[0].Umaban.Substring(1, 1);
-            cCSV.setData(rowTarget - 1, 20,
-                createPayData(mHrData.PayWakuren[0].Pay, tmp));
-            if (int.TryParse(mHrData.PayWakuren[1].Pay, out res))
-            {
-                tmp = "0" + mHrData.PayWakuren[1].Umaban.Substring(0, 1) +
-                "0" + mHrData.PayWakuren[1].Umaban.Substring(1, 1);
-                cCSV.setData(rowTarget + 0, 20,
-                createPayData(mHrData.PayWakuren[1].Pay, tmp));
-                tmp = "0" + mHrData.PayWakuren[2].Umaban.Substring(0, 1) +
-                "0" + mHrData.PayWakuren[2].Umaban.Substring(1, 1);
-                cCSV.setData(rowTarget - 1, 21,
-                createPayData(mHrData.PayWakuren[2].Pay, tmp));
-            }
-            // 馬連配当
-            cCSV.setData(rowTarget + 0, 21,
-                createPayData(mHrData.PayUmaren[0].Pay,
-                mHrData.PayUmaren[0].Kumi));
-            if (int.TryParse(mHrData.PayUmaren[1].Pay, out res))
-            {
-                cCSV.setData(rowTarget - 1, 22,
-                createPayData(mHrData.PayUmaren[1].Pay,
-                mHrData.PayUmaren[1].Kumi));
-                cCSV.setData(rowTarget + 0, 22,
-                createPayData(mHrData.PayUmaren[2].Pay,
-                mHrData.PayUmaren[2].Kumi));
-            }
-            // 馬単配当
-            cCSV.setData(rowTarget - 1, 23,
-                createPayData(mHrData.PayUmatan[0].Pay,
-                mHrData.PayUmatan[0].Kumi));
-            if (int.TryParse(mHrData.PayUmatan[1].Pay, out res))
-            {
-                cCSV.setData(rowTarget + 0, 23,
-                createPayData(mHrData.PayUmatan[1].Pay,
-                mHrData.PayUmatan[1].Kumi));
-                cCSV.setData(rowTarget - 1, 24,
-                createPayData(mHrData.PayUmatan[2].Pay,
-                mHrData.PayUmatan[2].Kumi));
-                cCSV.setData(rowTarget + 0, 24,
-                createPayData(mHrData.PayUmatan[3].Pay,
-                mHrData.PayUmatan[3].Kumi));
-                cCSV.setData(rowTarget - 1, 25,
-                createPayData(mHrData.PayUmatan[4].Pay,
-                mHrData.PayUmatan[4].Kumi));
-                cCSV.setData(rowTarget - 1, 25,
-                createPayData(mHrData.PayUmatan[5].Pay,
-                mHrData.PayUmatan[5].Kumi));
-            }
-            // 3連複配当
-            cCSV.setData(rowTarget - 1, 26,
-                createPayData(mHrData.PaySanrenpuku[0].Pay,
-                mHrData.PaySanrenpuku[0].Kumi));
-            if (int.TryParse(mHrData.PaySanrenpuku[1].Pay, out res))
-            {
-                cCSV.setData(rowTarget + 0, 26,
-                createPayData(mHrData.PaySanrenpuku[1].Pay,
-                mHrData.PaySanrenpuku[1].Kumi));
-                cCSV.setData(rowTarget - 1, 27,
-                createPayData(mHrData.PaySanrenpuku[2].Pay,
-                mHrData.PaySanrenpuku[2].Kumi));
-            }
-            // 3連単配当
-            cCSV.setData(rowTarget + 0, 27,
-                createPayData(mHrData.PaySanrentan[0].Pay,
-                mHrData.PaySanrentan[0].Kumi));
-            if (int.TryParse(mHrData.PaySanrentan[1].Pay, out res))
-            {
-                cCSV.setData(rowTarget - 1, 28,
-                createPayData(mHrData.PaySanrentan[1].Pay,
-                mHrData.PaySanrentan[1].Kumi));
-                cCSV.setData(rowTarget + 0, 28,
-                createPayData(mHrData.PaySanrentan[2].Pay,
-                mHrData.PaySanrentan[2].Kumi));
-                cCSV.setData(rowTarget - 1, 29,
-                createPayData(mHrData.PaySanrentan[3].Pay,
-                mHrData.PaySanrentan[3].Kumi));
-                cCSV.setData(rowTarget - 1, 29,
-                createPayData(mHrData.PaySanrentan[4].Pay,
-                mHrData.PaySanrentan[4].Kumi));
-                cCSV.setData(rowTarget + 0, 30,
-                createPayData(mHrData.PaySanrentan[5].Pay,
-                mHrData.PaySanrentan[5].Kumi));
-            }
-            // ワイド
-            cCSV.setData(rowTarget + 0, 30,
-                createPayData(mHrData.PayWide[0].Pay,
-                mHrData.PayWide[0].Kumi));
-            cCSV.setData(rowTarget - 1, 31,
-                createPayData(mHrData.PayWide[1].Pay,
-                mHrData.PayWide[1].Kumi));
-            cCSV.setData(rowTarget + 0, 31,
-                createPayData(mHrData.PayWide[2].Pay,
-                mHrData.PayWide[2].Kumi));
-            if (int.TryParse(mHrData.PayWide[3].Pay, out res))
-            {
-                cCSV.setData(rowTarget - 1, 32,
-                createPayData(mHrData.PayWide[3].Pay,
-                mHrData.PayWide[3].Kumi));
-                cCSV.setData(rowTarget + 0, 32,
-                createPayData(mHrData.PayWide[4].Pay,
-                mHrData.PayWide[4].Kumi));
-                cCSV.setData(rowTarget - 1, 33,
-                createPayData(mHrData.PayWide[5].Pay,
-                mHrData.PayWide[5].Kumi));
-                cCSV.setData(rowTarget + 0, 33,
-                createPayData(mHrData.PayWide[6].Pay,
-                mHrData.PayWide[6].Kumi));
-            }
-        }
-
+        
         public string JyoCord(string cvt)
         {
             string ret = "";
@@ -545,44 +406,17 @@ namespace GetUmatanOdds
             return ret;
         }
 
-        public string createPayData(string strPay, string strKumi)
-        {
-            string ret = "";
-            string tmpstrKumi = "";
-            if (strPay.Length == 0)
-                return ret;
-            if (strPay.Replace(" ", "") == "")
-                return ret;
-            if (strKumi.Length >= 6)
-            {
-                tmpstrKumi = strKumi.Substring(0, 2) + "・" +
-                    strKumi.Substring(2, 2) + "・" +
-                    strKumi.Substring(4, 2);
-            }
-            else if (strKumi.Length >= 4)
-            {
-                tmpstrKumi = strKumi.Substring(0, 2) + "・" +
-                    strKumi.Substring(2, 2);
-            }
-            else
-            {
-                tmpstrKumi = strKumi;
-            }
-            ret = int.Parse(strPay) + "(" + tmpstrKumi + ")";
-            return ret;
-        }
-
-        public void CreateCompositeOdds(ClassCSV cCSV, List<clcUmatanOdds> listUmatanOddsH1,
-            List<clcRaceUma> listUmatanOddsO1, List<clcUmatanOdds> listUmatanOdds,
-            List<clcOddsSanrentan> listOddsSanrentan)
+        public void CreateCompositeOdds(ClassCSV cCSV, List<clsUmatanOdds> listUmatanOddsH1,
+            List<clsRaceUma> listUmatanOddsO1, List<clsUmatanOdds> listUmatanOdds,
+            List<clsOddsSanrentan> listOddsSanrentan)
         {
             int cnt = 0;
 
-            // オッズ（単複枠）
-            foreach (clcRaceUma UmatanOddsO1 in listUmatanOddsO1)
+            // 人気順を入れる
+            foreach (clsRaceUma UmatanOddsO1 in listUmatanOddsO1)
             {
                 cnt = 0;
-                foreach (clcUmatanOdds UmatanOdds in listUmatanOdds)
+                foreach (clsUmatanOdds UmatanOdds in listUmatanOdds)
                 {
                     if (UmatanOdds.Umaban1 == UmatanOddsO1.Umaban)
                         listUmatanOdds[cnt].Ninki1 = UmatanOddsO1.Ninki;
@@ -593,10 +427,10 @@ namespace GetUmatanOdds
             }
 
             // 票数1
-            foreach (clcUmatanOdds UmatanOddsH1 in listUmatanOddsH1)
+            foreach (clsUmatanOdds UmatanOddsH1 in listUmatanOddsH1)
             {
                 cnt = 0;
-                foreach (clcUmatanOdds UmatanOdds in listUmatanOdds)
+                foreach (clsUmatanOdds UmatanOdds in listUmatanOdds)
                 {
                     if (UmatanOdds.Kumi == UmatanOddsH1.Kumi)
                     {
@@ -610,7 +444,7 @@ namespace GetUmatanOdds
             // 馬単裏
             for (int i = 0; i < listUmatanOdds.Count; i++)
             {
-                foreach (clcUmatanOdds UmatanOdds in listUmatanOdds)
+                foreach (clsUmatanOdds UmatanOdds in listUmatanOdds)
                 {
                     if (listUmatanOdds[i].Umaban1 == UmatanOdds.Umaban2 &&
                         listUmatanOdds[i].Umaban2 == UmatanOdds.Umaban1)
@@ -632,9 +466,8 @@ namespace GetUmatanOdds
                 {
                     denom += 1 / listOddsGousei[j];
                 }
-                if(denom > 0)
-                    listUmatanOdds[i].SyntheticOdds1 = 
-                        string.Format("{0:0.0}", 1 / denom);
+                if (denom > 0)
+                    listUmatanOdds[i].SyntheticOdds1 = 1 / denom;
             }
 
             // ３連単オッズ
@@ -645,9 +478,9 @@ namespace GetUmatanOdds
                     List<double> listOddsGousei = new List<double>();
                     for (int j = 0; j < listOddsSanrentan.Count; j++)
                     {
-                        if(listUmatanOdds[i].Umaban1 == listOddsSanrentan[j].Umaban1 &&
+                        if (listUmatanOdds[i].Umaban1 == listOddsSanrentan[j].Umaban1 &&
                             listUmatanOdds[i].Umaban2 == listOddsSanrentan[j].Umaban2)
-                            listOddsGousei.Add(listOddsSanrentan[i].OddsSanrentan);
+                            listOddsGousei.Add(listOddsSanrentan[j].OddsSanrentan);
                     }
                     double denom = 0;
                     for (int j = 0; j < listOddsGousei.Count; j++)
@@ -656,28 +489,180 @@ namespace GetUmatanOdds
                             denom += 1 / listOddsGousei[j];
                     }
                     if (denom > 0)
-                        listUmatanOdds[i].SyntheticOdds2 =
-                            string.Format("{0:0.0}", 1 / denom);
+                        listUmatanOdds[i].SyntheticOdds2 = 1 / denom;
                 }
             }
 
+            //ソートする
+            listUmatanOdds.Sort((a, b) => b.Umaban1 - a.Umaban1);
+            listUmatanOdds.Sort((a, b) => b.Umaban2 - a.Umaban2);
+            listUmatanOdds.Sort((a, b) => a.OddsInt - b.OddsInt);
+
             //CSVに書き込み
             long rowWrite = 2;
-            foreach (clcUmatanOdds UmatanOdds in listUmatanOdds)
+            foreach (clsUmatanOdds UmatanOdds in listUmatanOdds)
             {
-                cCSV.setData(rowWrite, 1, UmatanOdds.Umaban1);
-                cCSV.setData(rowWrite, 2, UmatanOdds.Umaban2);
-                cCSV.setData(rowWrite, 3, string.Format("{0:0.0}",UmatanOdds.Odds));
-                cCSV.setData(rowWrite, 4, UmatanOdds.Ninki1);
-                cCSV.setData(rowWrite, 5, UmatanOdds.Ninki2);
+                string strOdds = string.Format("{0:0.0}", UmatanOdds.Odds);
+                if (strOdds.Substring(strOdds.Length - 1, 1) == "0")
+                    strOdds = ((int)UmatanOdds.Odds).ToString();
+                string strRevOdds = string.Format("{0:0.0}", UmatanOdds.RevOdds);
+                if (strRevOdds.Substring(strRevOdds.Length - 1, 1) == "0")
+                    strRevOdds = ((int)UmatanOdds.RevOdds).ToString();
+                string strSyntheticOdds1 = string.Format("{0:0.0}", UmatanOdds.SyntheticOdds1);
+                if (strSyntheticOdds1.Substring(strSyntheticOdds1.Length - 1, 1) == "0")
+                    strSyntheticOdds1 = Convert.ToInt32(UmatanOdds.SyntheticOdds1).ToString();
+
+                cCSV.setData(rowWrite, 1, UmatanOdds.Umaban1.ToString());
+                cCSV.setData(rowWrite, 2, UmatanOdds.Umaban2.ToString());
+                cCSV.setData(rowWrite, 3, strOdds);
+                cCSV.setData(rowWrite, 4, UmatanOdds.Ninki1.ToString());
+                cCSV.setData(rowWrite, 5, UmatanOdds.Ninki2.ToString());
                 cCSV.setData(rowWrite, 6, UmatanOdds.Hyou.ToString());
-                cCSV.setData(rowWrite, 7, string.Format("{0:0.0}", UmatanOdds.RevOdds));
-                cCSV.setData(rowWrite, 8, UmatanOdds.SyntheticOdds1);
-                if(_form1.checkBox1.Checked)
-                    cCSV.setData(rowWrite, 9, UmatanOdds.SyntheticOdds2);
+                cCSV.setData(rowWrite, 7, strRevOdds);
+                cCSV.setData(rowWrite, 8, strSyntheticOdds1);
+                if (_form1.checkBox1.Checked)
+                {
+                    string strSyntheticOdds2 = string.Format("{0:0.0}", UmatanOdds.SyntheticOdds2);
+                    if (strSyntheticOdds2.Substring(strSyntheticOdds2.Length - 1, 1) == "0")
+                        strSyntheticOdds2 = Convert.ToInt32(UmatanOdds.SyntheticOdds2).ToString();
+                    cCSV.setData(rowWrite, 9, strSyntheticOdds2);
+                }
+                    
                 rowWrite++;
             }
+        }
 
+        public List<clsUmatanOdds> setDataH1(string retbuff, 
+            string strDateTarg, string placeTarg, string racenumTarg)
+        {
+            List<clsUmatanOdds> ret = new List<clsUmatanOdds>();
+            JVData_Struct.JV_H1_HYOSU_ZENKAKE mH1Data =
+                new JVData_Struct.JV_H1_HYOSU_ZENKAKE();
+            mH1Data.SetDataB(ref retbuff);
+
+            string strJyo = JyoCord(mH1Data.id.JyoCD);
+            if (!(strDateTarg == mH1Data.id.Year + mH1Data.id.MonthDay &&
+                placeTarg == strJyo &&
+                mH1Data.id.RaceNum == racenumTarg))
+                return null;
+
+            for (int i = 0; i < 305; i++)
+            {
+                if (mH1Data.HyoUmatan[i].Kumi.Trim() == "")
+                    continue;
+                clsUmatanOdds cUmatanOdds = new clsUmatanOdds();
+                cUmatanOdds.Kumi = mH1Data.HyoUmatan[i].Kumi;
+                cUmatanOdds.Hyou = int.Parse(mH1Data.HyoUmatan[i].Hyo);
+                ret.Add(cUmatanOdds);
+            }
+            return ret;
+        }
+
+        public List<clsRaceUma> setDataO1(string retbuff, string strDateTarg, string placeTarg, string racenumTarg)
+        {
+            List<clsRaceUma> ret = new List<clsRaceUma>();
+            JVData_Struct.JV_O1_ODDS_TANFUKUWAKU mO1Data =
+                new JVData_Struct.JV_O1_ODDS_TANFUKUWAKU();
+            mO1Data.SetDataB(ref retbuff);
+
+            string strJyo = JyoCord(mO1Data.id.JyoCD);
+            if (!(strDateTarg == mO1Data.id.Year + mO1Data.id.MonthDay &&
+               placeTarg == strJyo &&
+               mO1Data.id.RaceNum == racenumTarg))
+                return null;
+
+            for (int i = 0; i < 18; i++)
+            {
+                if (mO1Data.OddsTansyoInfo[i].Umaban.Trim() == "")
+                    continue;
+                clsRaceUma cRaceUma = new clsRaceUma();
+                cRaceUma.Umaban = int.Parse(mO1Data.OddsTansyoInfo[i].Umaban);
+                cRaceUma.Ninki = int.Parse(mO1Data.OddsTansyoInfo[i].Ninki);
+                ret.Add(cRaceUma);
+            }
+            return ret;
+        }
+
+        public List<clsUmatanOdds> setDataO4(string retbuff, string strDateTarg, string placeTarg, string racenumTarg)
+        {
+            List<clsUmatanOdds> ret = new List<clsUmatanOdds>();
+            JVData_Struct.JV_O4_ODDS_UMATAN mO4Data =
+                new JVData_Struct.JV_O4_ODDS_UMATAN();
+            mO4Data.SetDataB(ref retbuff);
+
+            string strJyo = JyoCord(mO4Data.id.JyoCD);
+            if (!(strDateTarg == mO4Data.id.Year + mO4Data.id.MonthDay &&
+               placeTarg == strJyo &&
+               mO4Data.id.RaceNum == racenumTarg))
+                return null;
+
+            int cnt = 0;
+            for (int i = 0; i < 306; i++)
+            {
+                if (mO4Data.OddsUmatanInfo[i].Kumi.Trim() == "" ||
+                    mO4Data.OddsUmatanInfo[i].Odds.Trim() == "" ||
+                    int.Parse(mO4Data.OddsUmatanInfo[i].Odds) == 0 ||
+                    mO4Data.OddsUmatanInfo[i].Odds.Contains("-") ||
+                    mO4Data.OddsUmatanInfo[i].Odds.Contains("*"))
+                    continue;
+                clsUmatanOdds cUmatanOdds = new clsUmatanOdds();
+                cUmatanOdds.Kumi = mO4Data.OddsUmatanInfo[i].Kumi;
+                cUmatanOdds.Umaban1 = int.Parse(mO4Data.OddsUmatanInfo[i].Kumi.Substring(0, 2));
+                cUmatanOdds.Umaban2 = int.Parse(mO4Data.OddsUmatanInfo[i].Kumi.Substring(2, 2));
+                cUmatanOdds.Odds = (double)int.Parse(mO4Data.OddsUmatanInfo[i].Odds) / 10;
+                cnt = 0;
+                foreach (clsUmatanOdds ele in ret)
+                {
+                    if (ele.Odds == cUmatanOdds.Odds)
+                        cnt++;
+                }
+                cUmatanOdds.OddsInt = int.Parse(mO4Data.OddsUmatanInfo[i].Odds +
+                    string.Format("{0:D3}", cnt));
+                ret.Add(cUmatanOdds);
+            }
+            return ret;
+        }
+
+        public List<clsOddsSanrentan> setDataO6(string retbuff, string strDateTarg, string placeTarg,
+            string racenumTarg)
+        {
+            List<clsOddsSanrentan> ret = new List<clsOddsSanrentan>();
+
+            DateTime dateTime;
+            JVData_Struct.JV_O6_ODDS_SANRENTAN mO6Data =
+                new JVData_Struct.JV_O6_ODDS_SANRENTAN();
+
+            mO6Data.SetDataB(ref retbuff);
+            dateTime = DateTime.Parse(
+            (mO6Data.id.Year +
+            mO6Data.id.MonthDay).Insert(4, "/").Insert(7, "/"));
+            if (dateTime > DateTime.Parse(strDateTarg.Insert(4, "/").Insert(7, "/")))
+                return null;
+
+            string strJyo = JyoCord(mO6Data.id.JyoCD);
+            if (!(strDateTarg == mO6Data.id.Year + mO6Data.id.MonthDay &&
+               placeTarg == strJyo &&
+               mO6Data.id.RaceNum == racenumTarg))
+                return null;
+
+            for (int i = 0; i < 4896; i++)
+            {
+                if (mO6Data.OddsSanrentanInfo[i].Kumi.Trim() == "" ||
+                    mO6Data.OddsSanrentanInfo[i].Odds.Trim() == "" ||
+                    int.Parse(mO6Data.OddsSanrentanInfo[i].Odds) == 0 ||
+                    mO6Data.OddsSanrentanInfo[i].Odds.Contains("-") ||
+                    mO6Data.OddsSanrentanInfo[i].Odds.Contains("*"))
+                    continue;
+                clsOddsSanrentan cOddsSanrentan = new clsOddsSanrentan();
+                cOddsSanrentan.Kumi = mO6Data.OddsSanrentanInfo[i].Kumi;
+                cOddsSanrentan.Umaban1 = int.Parse(mO6Data.OddsSanrentanInfo[i].Kumi.Substring(0, 2));
+                cOddsSanrentan.Umaban2 = int.Parse(mO6Data.OddsSanrentanInfo[i].Kumi.Substring(2, 2));
+                cOddsSanrentan.Umaban3 = int.Parse(mO6Data.OddsSanrentanInfo[i].Kumi.Substring(4, 2));
+                cOddsSanrentan.OddsSanrentan = (double)int.Parse(mO6Data.OddsSanrentanInfo[i].Odds) / 10;
+                ret.Add(cOddsSanrentan);
+            }
+
+            return ret;
         }
     }
 }

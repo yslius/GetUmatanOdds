@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace GetUmatanOdds
 {
-    public class clcOddsSanrentan
+    public class clsOddsSanrentan
     {
         public string Kumi;
-        public string Umaban1;
-        public string Umaban2;
-        public string Umaban3;
+        public int Umaban1;
+        public int Umaban2;
+        public int Umaban3;
         public double OddsSanrentan;
     }
 }

@@ -6,16 +6,20 @@ using System.Threading.Tasks;
 
 namespace GetUmatanOdds
 {
-    class UmatanOddsRT
+    public class UmatanOddsRT
     {
         Form1 _form1;
         private clsCodeConv objCodeConv;
         private ClassLog cLog;
-        int size = 0;
+        //int size = 0;
         int count = 0;
-        clcCommon cCommon;
+        clsCommon cCommon;
+        public List<clsUmatanOdds> listUmatanOddsH1 = new List<clsUmatanOdds>();
+        public List<clsRaceUma> listUmatanOddsO1 = new List<clsRaceUma>();
+        public List<clsUmatanOdds> listUmatanOdds = new List<clsUmatanOdds>();
+        public List<clsOddsSanrentan> listOddsSanrentan = new List<clsOddsSanrentan>();
 
-        public UmatanOddsRT(clcCommon cCommon1, Form1 form1)
+        public UmatanOddsRT(clsCommon cCommon1, Form1 form1)
         {
             _form1 = form1;
             cCommon = cCommon1;
@@ -23,61 +27,97 @@ namespace GetUmatanOdds
             objCodeConv = new clsCodeConv();
         }
 
-        void GetRTDataDetailData(ClassCSV cCSV, string strDateTarg)
+        public void GetRTDataDetailData(ClassCSV cCSV, string strDateTarg,
+            string placeTarg, string racenumTarg)
         {
-            List<clcUmatanOdds> listUmatanOdds = new List<clcUmatanOdds>();
+            //データ取得する
+            _form1.axJVLink1.JVClose();
+            if (cCommon.checkInit() != 0)
+                return;
+
+            if (!GetRTDataDetailData1(cCSV, strDateTarg, placeTarg, racenumTarg))
+            {
+                _form1.axJVLink1.JVClose();
+                return;
+            }
+            _form1.prgDownload.Value = 51;
+            _form1.prgDownload.Value--;
+
+
+            //計算する
+            cCommon.CreateCompositeOdds(cCSV, listUmatanOddsH1, listUmatanOddsO1,
+                listUmatanOdds, listOddsSanrentan);
+
+            _form1.prgDownload.Maximum++;
+            _form1.prgDownload.Value = _form1.prgDownload.Maximum;
+            _form1.prgDownload.Maximum--;
+        }
+
+        bool GetRTDataDetailData1(ClassCSV cCSV, string strDateTarg,
+            string placeTarg, string racenumTarg)
+        {
             string codeJyo;
-            string numRace;
-            
+            string retbuff;
+
+            codeJyo = cCommon.JyogyakuCord(placeTarg);
+            if (codeJyo == "")
+                return false;
 
             //速報オッズ（馬単）の呼び出し
-
+            retbuff = GeJVRTRead(strDateTarg, codeJyo, racenumTarg, "0B34", 4100);
+            if (retbuff == null)
+                return false;
+            listUmatanOdds = cCommon.setDataO4(retbuff, strDateTarg,
+                placeTarg, racenumTarg);
 
             //速報オッズ（単複枠）の呼び出し
-
+            retbuff = GeJVRTRead(strDateTarg, codeJyo, racenumTarg, "0B31", 1000);
+            if (retbuff == null)
+                return false;
+            listUmatanOddsO1 = cCommon.setDataO1(retbuff, strDateTarg,
+                placeTarg, racenumTarg);
 
             //速報票数(全賭式)の呼び出し
+            retbuff = GeJVRTRead(strDateTarg, codeJyo, racenumTarg, "0B20", 30000);
+            if (retbuff == null)
+                return false;
+            listUmatanOddsH1 = cCommon.setDataH1(retbuff, strDateTarg,
+                placeTarg, racenumTarg);
 
-
-            //馬単裏計算
-
-
-            //馬単合成計算
-
-
-            //3連単1・2着軸総流し計算
             //３連単オッズの呼び出し
+            retbuff = GeJVRTRead(strDateTarg, codeJyo, racenumTarg, "0B36", 110000);
+            if (retbuff == null)
+                return false;
+            listOddsSanrentan = cCommon.setDataO6(retbuff, strDateTarg,
+                placeTarg, racenumTarg);
 
+            return true;
 
         }
 
-        bool GetRTDataDetailData1(ClassCSV cCSV, string strDateTarg, string codeJyo, string numRace)
+        string GeJVRTRead(string strDateTarg, string codeJyo, string numRace, string codeRT, int size)
         {
-            clcUmatanOdds cUmatanOdds = new clcUmatanOdds();
+            clsUmatanOdds cUmatanOdds = new clsUmatanOdds();
 
             string retbuff;
-            long cntLoop = 0;
 
+            if (cCommon.checkClose() != 0)
+                return null;
             if (cCommon.checkInit() != 0)
-                return false;
-            if (!cCommon.isJVOpenReal("0B34", strDateTarg + codeJyo + numRace))
+                return null;
+            if (!cCommon.isJVRTOpen(codeRT, strDateTarg + codeJyo + numRace))
             {
                 _form1.axJVLink1.JVClose();
-                return false;
+                return null;
             }
             retbuff = cCommon.loopJVRead(size, count, false);
             if (retbuff == "" || retbuff == "END")
             {
                 _form1.axJVLink1.JVClose();
-                return false;
+                return null;
             }
-            JVData_Struct.JV_O4_ODDS_UMATAN mO4Data =
-                new JVData_Struct.JV_O4_ODDS_UMATAN();
-            mO4Data.SetDataB(ref retbuff);
 
-
-            return true;
-
+            return retbuff;
         }
 
 

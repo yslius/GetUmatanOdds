@@ -6,17 +6,18 @@ using System.Threading.Tasks;
 
 namespace GetUmatanOdds
 {
-    public class clcUmatanOdds
+    public class clsUmatanOdds
     {
         public string Kumi;
-        public string Umaban1;
-        public string Umaban2;
+        public int Umaban1;
+        public int Umaban2;
         public double Odds;
-        public string Ninki1;
-        public string Ninki2;
+        public int OddsInt;
+        public int Ninki1;
+        public int Ninki2;
         public int Hyou;
         public double RevOdds;
-        public string SyntheticOdds1;
-        public string SyntheticOdds2;
+        public double SyntheticOdds1;
+        public double SyntheticOdds2;
     }
 }

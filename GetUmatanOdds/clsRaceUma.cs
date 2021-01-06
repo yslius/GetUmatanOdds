@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace GetUmatanOdds
 {
-    public class clcRaceUma
+    public class clsRaceUma
     {
         public string strdate;
         public string nameJyo;
         public string racenum;
-        public string Umaban;
-        public string Ninki;
+        public int Umaban;
+        public int Ninki;
         public string Bamei;
         public string KettoNum;
     }

@@ -13,13 +13,17 @@ namespace GetUmatanOdds
         private ClassLog cLog;
         int size = 0;
         int count = 0;
-        clcCommon cCommon;
-        public List<clcUmatanOdds> listUmatanOddsH1 = new List<clcUmatanOdds>();
-        public List<clcRaceUma> listUmatanOddsO1 = new List<clcRaceUma>();
-        public List<clcUmatanOdds> listUmatanOdds = new List<clcUmatanOdds>();
-        public List<clcOddsSanrentan> listOddsSanrentan = new List<clcOddsSanrentan>();
+        clsCommon cCommon;
+        //public List<clcUmatanOdds> listUmatanOddsH1 = new List<clcUmatanOdds>();
+        //public List<clcRaceUma> listUmatanOddsO1 = new List<clcRaceUma>();
+        //public List<clcUmatanOdds> listUmatanOdds = new List<clcUmatanOdds>();
+        //public List<clcOddsSanrentan> listOddsSanrentan = new List<clcOddsSanrentan>();
+        public List<clsUmatanOdds> listUmatanOddsH1;
+        public List<clsRaceUma> listUmatanOddsO1;
+        public List<clsUmatanOdds> listUmatanOdds;
+        public List<clsOddsSanrentan> listOddsSanrentan;
 
-        public UmatanOddsStock(clcCommon cCommon1, Form1 form1)
+        public UmatanOddsStock(clsCommon cCommon1, Form1 form1)
         {
             _form1 = form1;
             cCommon = cCommon1;
@@ -35,9 +39,6 @@ namespace GetUmatanOdds
         public void GetStockDataDetailData(ClassCSV cCSV, string strDateTarg, 
             string placeTarg, string racenumTarg)
         {
-            string codeJyo;
-            string numRace;
-
             //データ取得する
             _form1.axJVLink1.JVClose();
             if (cCommon.checkInit() != 0)
@@ -95,22 +96,36 @@ namespace GetUmatanOdds
                 //票数1
                 if (retbuff.Substring(0, 2) == "H1")
                 {
-                    setDataH1(retbuff, strDateTarg, placeTarg, racenumTarg);
+                    //setDataH1(retbuff, strDateTarg, placeTarg, racenumTarg);
+                    if(listUmatanOddsH1 == null)
+                        listUmatanOddsH1 = cCommon.setDataH1(retbuff, strDateTarg,
+                            placeTarg, racenumTarg);
                 }
                 //オッズ（単複枠）
                 if (retbuff.Substring(0, 2) == "O1")
                 {
-                    setDataO1(retbuff, strDateTarg, placeTarg, racenumTarg);
+                    //setDataO1(retbuff, strDateTarg, placeTarg, racenumTarg);
+                    if (listUmatanOddsO1 == null)
+                        listUmatanOddsO1 = cCommon.setDataO1(retbuff, strDateTarg,
+                            placeTarg, racenumTarg);
                 }
                 //オッズ（馬単）
                 if (retbuff.Substring(0, 2) == "O4")
                 {
-                    setDataO4(retbuff, strDateTarg, placeTarg, racenumTarg);
+                    //setDataO4(retbuff, strDateTarg, placeTarg, racenumTarg);
+                    if (listUmatanOdds == null)
+                        listUmatanOdds = cCommon.setDataO4(retbuff, strDateTarg,
+                            placeTarg, racenumTarg);
                 }
                 //３連単オッズ
                 if (retbuff.Substring(0, 2) == "O6")
                 {
-                    if (setDataO6(retbuff, strDateTarg, placeTarg, racenumTarg))
+                    //if (setDataO6(retbuff, strDateTarg, placeTarg, racenumTarg))
+                    //    isFind = true;
+                    if (listOddsSanrentan == null)
+                        listOddsSanrentan = cCommon.setDataO6(retbuff, strDateTarg,
+                        placeTarg, racenumTarg);
+                    if(listOddsSanrentan != null)
                         isFind = true;
                 }
                 cntLoop++;
@@ -153,8 +168,9 @@ namespace GetUmatanOdds
             {
                 if (mH1Data.HyoUmatan[i].Kumi.Trim() == "")
                     continue;
-                clcUmatanOdds cUmatanOdds = new clcUmatanOdds();
+                clsUmatanOdds cUmatanOdds = new clsUmatanOdds();
                 cUmatanOdds.Kumi = mH1Data.HyoUmatan[i].Kumi;
+                cUmatanOdds.Hyou = int.Parse(mH1Data.HyoUmatan[i].Hyo);
                 listUmatanOddsH1.Add(cUmatanOdds);
             }
         }
@@ -175,9 +191,9 @@ namespace GetUmatanOdds
             {
                 if (mO1Data.OddsTansyoInfo[i].Umaban.Trim() == "")
                     continue;
-                clcRaceUma cRaceUma = new clcRaceUma();
-                cRaceUma.Umaban = mO1Data.OddsTansyoInfo[i].Umaban;
-                cRaceUma.Ninki = mO1Data.OddsTansyoInfo[i].Ninki;
+                clsRaceUma cRaceUma = new clsRaceUma();
+                cRaceUma.Umaban = int.Parse(mO1Data.OddsTansyoInfo[i].Umaban);
+                cRaceUma.Ninki = int.Parse(mO1Data.OddsTansyoInfo[i].Ninki);
                 listUmatanOddsO1.Add(cRaceUma);
             }
         }
@@ -202,11 +218,12 @@ namespace GetUmatanOdds
                     mO4Data.OddsUmatanInfo[i].Odds.Contains("-") ||
                     mO4Data.OddsUmatanInfo[i].Odds.Contains("*"))
                     continue;
-                clcUmatanOdds cUmatanOdds = new clcUmatanOdds();
+                clsUmatanOdds cUmatanOdds = new clsUmatanOdds();
                 cUmatanOdds.Kumi = mO4Data.OddsUmatanInfo[i].Kumi;
-                cUmatanOdds.Umaban1 = mO4Data.OddsUmatanInfo[i].Kumi.Substring(0, 2);
-                cUmatanOdds.Umaban2 = mO4Data.OddsUmatanInfo[i].Kumi.Substring(2, 2);
-                cUmatanOdds.Odds = int.Parse(mO4Data.OddsUmatanInfo[i].Odds) / 10;
+                cUmatanOdds.Umaban1 = int.Parse(mO4Data.OddsUmatanInfo[i].Kumi.Substring(0, 2));
+                cUmatanOdds.Umaban2 = int.Parse(mO4Data.OddsUmatanInfo[i].Kumi.Substring(2, 2));
+                cUmatanOdds.Odds = (double)int.Parse(mO4Data.OddsUmatanInfo[i].Odds) / 10;
+                cUmatanOdds.OddsInt = int.Parse(mO4Data.OddsUmatanInfo[i].Odds);
                 listUmatanOdds.Add(cUmatanOdds);
             }
         }
@@ -239,11 +256,11 @@ namespace GetUmatanOdds
                     mO6Data.OddsSanrentanInfo[i].Odds.Contains("-") ||
                     mO6Data.OddsSanrentanInfo[i].Odds.Contains("*"))
                     continue;
-                clcOddsSanrentan cOddsSanrentan = new clcOddsSanrentan();
+                clsOddsSanrentan cOddsSanrentan = new clsOddsSanrentan();
                 cOddsSanrentan.Kumi = mO6Data.OddsSanrentanInfo[i].Kumi;
-                cOddsSanrentan.Umaban1 = mO6Data.OddsSanrentanInfo[i].Kumi.Substring(0, 2);
-                cOddsSanrentan.Umaban2 = mO6Data.OddsSanrentanInfo[i].Kumi.Substring(2, 2);
-                cOddsSanrentan.Umaban3 = mO6Data.OddsSanrentanInfo[i].Kumi.Substring(4, 2);
+                cOddsSanrentan.Umaban1 = int.Parse(mO6Data.OddsSanrentanInfo[i].Kumi.Substring(0, 2));
+                cOddsSanrentan.Umaban2 = int.Parse(mO6Data.OddsSanrentanInfo[i].Kumi.Substring(2, 2));
+                cOddsSanrentan.Umaban3 = int.Parse(mO6Data.OddsSanrentanInfo[i].Kumi.Substring(4, 2));
                 //cOddsSanrentan.OddsSanrentan = string.Format("{0:0.0}",
                 //    int.Parse(mO6Data.OddsSanrentanInfo[i].Odds));
                 cOddsSanrentan.OddsSanrentan = int.Parse(mO6Data.OddsSanrentanInfo[i].Odds) / 10;

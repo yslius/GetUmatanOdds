@@ -19,7 +19,7 @@ namespace GetUmatanOdds
         private UmatanOddsRT cUmatanOddsRT;
         ClassCSV cCSV;
 
-        public UmatanOdds(clcCommon cCommon, OperateForm cOperateForm1,
+        public UmatanOdds(clsCommon cCommon, OperateForm cOperateForm1,
             Form1 form1)
         {
             _form1 = form1;
@@ -30,25 +30,20 @@ namespace GetUmatanOdds
             cCSV = new ClassCSV();
         }
 
-        public void getUmatanOdds()
+        public void getUmatanOdds(string strDateTarg, string placeTarg, string racenumTarg)
         {
             cLog.writeLog("getUmatanOdds");
             cOperateForm.disableButton();
 
             string pathTarg;
-            string placeTarg;
-            string racenumTarg;
             string nameFileTarg;
-
-            DateTime datetimeTarg = _form1.dateTimePicker1.Value;
-            string strDateTarg = datetimeTarg.ToString("yyyyMMdd");
-
-            strDateTarg = "20201206";
+            
             pathTarg = _form1.textBox1.Text;
-            //placeTarg = _form1.listBox1.SelectedItem.ToString();
-            placeTarg = "中山";
-            //racenumTarg = Strings.StrConv(_form1.listBox1.SelectedItem.ToString(), VbStrConv.Wide);
-            racenumTarg = "01";
+            placeTarg = placeTarg.Replace("競馬場","");
+
+            //strDateTarg = "20201206"; //20201206 20210105
+            //placeTarg = "中山";
+            //racenumTarg = "01";
 
             // CSV初期化
             var encoding = Encoding.GetEncoding("shift_jis");
@@ -58,7 +53,7 @@ namespace GetUmatanOdds
             writeHeadData(cCSV);
 
             // 速報開催情報(一括)の呼び出し
-            int retval = checkJVRTOpen(datetimeTarg);
+            int retval = checkJVRTOpen(strDateTarg);
             if (retval < -1)
                 return;
 
@@ -68,11 +63,11 @@ namespace GetUmatanOdds
             }
             else
             {
-                //cUmatanOddsRT.GetRTDataDetailData(cCSV, strDateTarg);
+                cUmatanOddsRT.GetRTDataDetailData(cCSV, strDateTarg, placeTarg, racenumTarg);
             }
 
             // ファイル出力
-            racenumTarg = Strings.StrConv("01", VbStrConv.Wide);
+            racenumTarg = Strings.StrConv(racenumTarg, VbStrConv.Wide);
             nameFileTarg = "馬単オッズ_" + strDateTarg + "_" + placeTarg + racenumTarg + ".csv";
             cCSV.CreateCSVdataAll();
             File.WriteAllText(pathTarg + "\\" + nameFileTarg, cCSV.dataCsvAll, encoding);
@@ -86,20 +81,17 @@ namespace GetUmatanOdds
 
         }
 
-        private int checkJVRTOpen(DateTime datetimeTarg)
+        private int checkJVRTOpen(string strDateTarg)
         {
             string dataspec = "0B14";
-            TimeSpan timeSpan = new TimeSpan(0, 0, 0, 0);
-            string strDate =
-                (datetimeTarg - timeSpan).ToString("yyyyMMdd");
 
-            int num2 = _form1.axJVLink1.JVClose();
-            if (num2 != 0)
-                MessageBox.Show("JVClose エラー：" + num2);
+            int ret = _form1.axJVLink1.JVClose();
+            if (_form1.axJVLink1.JVClose() != 0)
+                MessageBox.Show("JVClose エラー：" + ret);
 
-            int num1 = _form1.axJVLink1.JVRTOpen(dataspec, strDate);
+            ret = _form1.axJVLink1.JVRTOpen(dataspec, strDateTarg);
 
-            return num1;
+            return ret;
         }
 
         void writeHeadData(ClassCSV cCSV)
