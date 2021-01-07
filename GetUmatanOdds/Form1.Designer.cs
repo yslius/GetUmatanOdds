@@ -315,6 +315,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.axJVLink1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "JV-Link馬単オッズ取得ツール";
             this.Load += new System.EventHandler(this.Form1_Load);

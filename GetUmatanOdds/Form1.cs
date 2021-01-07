@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace GetUmatanOdds
 {
@@ -37,6 +38,10 @@ namespace GetUmatanOdds
             {
                 //return;
             }
+
+            // CodeTable.csvのチェック
+            if (!File.Exists(Application.StartupPath + "\\CodeTable.csv"))
+                Application.Exit();
 
             // DBファイルがなければDB作る
             if (!cDatabase.isExistDbFile())
