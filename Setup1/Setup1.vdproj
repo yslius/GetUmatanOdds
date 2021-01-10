@@ -94,12 +94,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A1F36DD6FE95BB5FDEB6BC58445F6407"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_D7B22E9A805D4C3DA74B4AE3B8C4EE2C"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -133,6 +127,12 @@
         "OwnerKey" = "8:_AF9B19A7023F21EEFC6E236A8C40045D"
         "MsmSig" = "8:_UNDEFINED"
         }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A1F36DD6FE95BB5FDEB6BC58445F6407"
+        "MsmSig" = "8:_UNDEFINED"
+        }
     }
     "Configurations"
     {
@@ -151,6 +151,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -167,6 +183,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -571,15 +603,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:GetUmatanOdds"
-        "ProductCode" = "8:{98B2E5D6-14C9-461D-BE98-0396152C190B}"
-        "PackageCode" = "8:{7649A390-1797-45F1-99DA-81E2FD1388F1}"
+        "ProductCode" = "8:{19CD8503-59D4-4384-8763-613143FEC6FC}"
+        "PackageCode" = "8:{606C2A63-FDEA-45B7-A041-446D82F56BF0}"
         "UpgradeCode" = "8:{C07267DB-5105-4527-A8B4-DCA1F864AE6D}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.2.0"
         "Manufacturer" = "8:Yslius"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -694,7 +726,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_77AF339B2AE84E70AC4B07B0910D8F83"
             {
-            "Name" = "8:GetUmatanOdds_v1.0"
+            "Name" = "8:GetUmatanOdds_v1.2"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -1121,7 +1153,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_D7B22E9A805D4C3DA74B4AE3B8C4EE2C"
             {
-            "SourcePath" = "8:..\\GetUmatanOdds\\obj\\Release\\GetUmatanOdds.exe"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_46407F52436542939A514FCD771C9C02"

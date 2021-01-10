@@ -254,18 +254,30 @@ namespace GetUmatanOdds
         {
             JVData_Struct.JV_RA_RACE jvRaRace = new JVData_Struct.JV_RA_RACE();
             JVData_Struct.JV_SE_RACE_UMA jvSeRaceUma = new JVData_Struct.JV_SE_RACE_UMA();
-
-            TimeSpan timeSpan = new TimeSpan(365 * 4, 0, 0, 0); //365*4
-            string strDate =
-                (datetimeTarg - timeSpan).ToString("yyyyMMdd");
             string retbuff;
             long cntLoop = 0;
             bool isExistData = false;
-
             int size = 40000;
             int count = 256;
-            int option = 4;
-            double bunbo = (datetimeTarg - (datetimeTarg - timeSpan)).TotalDays;
+            int option;
+            string strDate;
+            double bunbo;
+            DateTime DateTimeStart;
+
+            if (listdbDate.Count > 0)
+            {
+                strDate = listdbDate[listdbDate.Count-1];
+                DateTimeStart = DateTime.Parse(listdbDate[listdbDate.Count - 1].Insert(4, "/").Insert(7, "/"));
+                option = 1;
+            }
+            else
+            {
+                TimeSpan timeSpan = new TimeSpan(365 * 4, 0, 0, 0); //365*4
+                strDate = (datetimeTarg - timeSpan).ToString("yyyyMMdd");
+                DateTimeStart = datetimeTarg - timeSpan;
+                option = 4;
+            }
+            bunbo = (datetimeTarg - DateTimeStart).TotalDays;
 
             _form1.prgJVRead.Maximum = 100;
             _form1.prgJVRead.Value = 0;
@@ -290,12 +302,17 @@ namespace GetUmatanOdds
 
                     // プログレスバー更新
                     DateTime dateTimeJv = DateTime.Parse((retbuff.Substring(11, 8)).Insert(4, "/").Insert(7, "/"));
-                    double bunshi = (dateTimeJv - (datetimeTarg - timeSpan)).TotalDays;
+                    if(dateTimeJv > datetimeTarg)
+                        continue;
+                    double bunshi = (dateTimeJv - DateTimeStart).TotalDays;
                     if (bunshi < 0)
                         bunshi = 0;
                     _form1.prgJVRead.Value = (int)(bunshi / bunbo * 100);
-                    _form1.prgJVRead.Value++;
-                    _form1.prgJVRead.Value--;
+                    if(_form1.prgJVRead.Value < _form1.prgJVRead.Maximum)
+                    {
+                        _form1.prgJVRead.Value++;
+                        _form1.prgJVRead.Value--;
+                    }
                     _form1.rtbData.Text = jvRaRace.id.Year + jvRaRace.id.MonthDay;
                     _form1.rtbData.Refresh();
 
@@ -303,7 +320,7 @@ namespace GetUmatanOdds
                     if (isExistDateList(listdbDate, jvRaRace.id.Year + jvRaRace.id.MonthDay))
                     {
                         isExistData = true;
-                        _form1.axJVLink1.JVSkip();
+                        //_form1.axJVLink1.JVSkip();
                         continue;
                     }
 

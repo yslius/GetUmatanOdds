@@ -18,6 +18,7 @@ namespace GetUmatanOdds
         private ClassLog cLog = new ClassLog();
         clsDatabase cDatabase;
         private DateTime oldSelectDate;
+        private bool isFormLord = true;
 
         public Form1()
         {
@@ -59,8 +60,9 @@ namespace GetUmatanOdds
                 clsDbInfo cDbInfo = listdbHistory[listdbHistory.Count - 1];
                 cOperateForm.selectHistory(cDbInfo);
             }
+            isFormLord = false;
 
-            
+
         }
 
         private void mnuConfJV_Click(object sender, EventArgs e)
@@ -150,6 +152,8 @@ namespace GetUmatanOdds
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
+            if (isFormLord)
+                return;
             listBox1.Items.Clear();
             listBox2.Items.Clear();
             listBox3.Items.Clear();
