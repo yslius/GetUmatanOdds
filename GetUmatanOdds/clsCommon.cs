@@ -411,6 +411,7 @@ namespace GetUmatanOdds
             List<clsOddsSanrentan> listOddsSanrentan)
         {
             int cnt = 0;
+            bool isExistHyou = true;
 
             // 人気順を入れる
             foreach (clsRaceUma UmatanOddsO1 in listUmatanOddsO1)
@@ -427,6 +428,8 @@ namespace GetUmatanOdds
             }
 
             // 票数1
+            if (listUmatanOddsH1.Count == 0)
+                isExistHyou = false;
             foreach (clsUmatanOdds UmatanOddsH1 in listUmatanOddsH1)
             {
                 cnt = 0;
@@ -517,7 +520,10 @@ namespace GetUmatanOdds
                 cCSV.setData(rowWrite, 3, strOdds);
                 cCSV.setData(rowWrite, 4, UmatanOdds.Ninki1.ToString());
                 cCSV.setData(rowWrite, 5, UmatanOdds.Ninki2.ToString());
-                cCSV.setData(rowWrite, 6, UmatanOdds.Hyou.ToString());
+                if(isExistHyou)
+                    cCSV.setData(rowWrite, 6, UmatanOdds.Hyou.ToString());
+                else
+                    cCSV.setData(rowWrite, 6, "");
                 cCSV.setData(rowWrite, 7, strRevOdds);
                 cCSV.setData(rowWrite, 8, strSyntheticOdds1);
                 if (_form1.checkBox1.Checked)
@@ -575,6 +581,8 @@ namespace GetUmatanOdds
             {
                 if (mO1Data.OddsTansyoInfo[i].Umaban.Trim() == "")
                     continue;
+                if (mO1Data.OddsTansyoInfo[i].Ninki.Contains("*"))
+                    continue;
                 clsRaceUma cRaceUma = new clsRaceUma();
                 cRaceUma.Umaban = int.Parse(mO1Data.OddsTansyoInfo[i].Umaban);
                 cRaceUma.Ninki = int.Parse(mO1Data.OddsTansyoInfo[i].Ninki);
@@ -601,9 +609,10 @@ namespace GetUmatanOdds
             {
                 if (mO4Data.OddsUmatanInfo[i].Kumi.Trim() == "" ||
                     mO4Data.OddsUmatanInfo[i].Odds.Trim() == "" ||
-                    int.Parse(mO4Data.OddsUmatanInfo[i].Odds) == 0 ||
                     mO4Data.OddsUmatanInfo[i].Odds.Contains("-") ||
                     mO4Data.OddsUmatanInfo[i].Odds.Contains("*"))
+                    continue;
+                if (int.Parse(mO4Data.OddsUmatanInfo[i].Odds) == 0)
                     continue;
                 clsUmatanOdds cUmatanOdds = new clsUmatanOdds();
                 cUmatanOdds.Kumi = mO4Data.OddsUmatanInfo[i].Kumi;
@@ -649,9 +658,10 @@ namespace GetUmatanOdds
             {
                 if (mO6Data.OddsSanrentanInfo[i].Kumi.Trim() == "" ||
                     mO6Data.OddsSanrentanInfo[i].Odds.Trim() == "" ||
-                    int.Parse(mO6Data.OddsSanrentanInfo[i].Odds) == 0 ||
                     mO6Data.OddsSanrentanInfo[i].Odds.Contains("-") ||
                     mO6Data.OddsSanrentanInfo[i].Odds.Contains("*"))
+                    continue;
+                if (int.Parse(mO6Data.OddsSanrentanInfo[i].Odds) == 0)
                     continue;
                 clsOddsSanrentan cOddsSanrentan = new clsOddsSanrentan();
                 cOddsSanrentan.Kumi = mO6Data.OddsSanrentanInfo[i].Kumi;

@@ -77,12 +77,6 @@ namespace GetUmatanOdds
             listUmatanOddsO1 = cCommon.setDataO1(retbuff, strDateTarg,
                 placeTarg, racenumTarg);
 
-            //速報票数(全賭式)の呼び出し
-            retbuff = GeJVRTRead(strDateTarg, codeJyo, racenumTarg, "0B20", 30000);
-            if (retbuff == null)
-                return false;
-            listUmatanOddsH1 = cCommon.setDataH1(retbuff, strDateTarg,
-                placeTarg, racenumTarg);
 
             //３連単オッズの呼び出し
             retbuff = GeJVRTRead(strDateTarg, codeJyo, racenumTarg, "0B36", 110000);
@@ -90,6 +84,14 @@ namespace GetUmatanOdds
                 return false;
             listOddsSanrentan = cCommon.setDataO6(retbuff, strDateTarg,
                 placeTarg, racenumTarg);
+
+            //速報票数(全賭式)の呼び出し
+            retbuff = GeJVRTRead(strDateTarg, codeJyo, racenumTarg, "0B20", 30000);
+            if (retbuff != null)
+            {
+                listUmatanOddsH1 = cCommon.setDataH1(retbuff, strDateTarg,
+                placeTarg, racenumTarg);
+            }
 
             return true;
 
